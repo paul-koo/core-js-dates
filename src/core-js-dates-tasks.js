@@ -76,13 +76,10 @@ function getDayName(date) {
 function getNextFriday(date) {
   const copyDate = new Date(String(date));
   copyDate.setDate(copyDate.getDate() + 1);
-  do {
-    if (Number(copyDate.getDay()) !== 5) {
-      copyDate.setDate(copyDate.getDate() + 1);
-    } else {
-      return copyDate;
-    }
-  } while (true);
+  while (Number(copyDate.getDay()) !== 5) {
+    copyDate.setDate(copyDate.getDate() + 1);
+  }
+  return copyDate;
 }
 
 /**
