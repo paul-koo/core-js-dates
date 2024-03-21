@@ -291,8 +291,58 @@ function getQuarter(date) {
  * { start: '01-01-2024', end: '15-01-2024' }, 1, 3 => ['01-01-2024', '05-01-2024', '09-01-2024', '13-01-2024']
  * { start: '01-01-2024', end: '10-01-2024' }, 1, 1 => ['01-01-2024', '03-01-2024', '05-01-2024', '07-01-2024', '09-01-2024']
  */
-function getWorkSchedule(/* period, countWorkDays, countOffDays */) {
-  throw new Error('Not implemented');
+function getWorkSchedule(period, countWorkDays, countOffDays) {
+  function addLeadingZero(d) {
+    return d < 10 ? `0${d}` : d;
+  }
+  function getUserTime(t) {
+    const Y = t.getFullYear();
+    const M = addLeadingZero(t.getMonth() + 1);
+    const D = addLeadingZero(t.getDate());
+    return `${D}-${M}-${Y}`;
+  }
+
+  const arr = [];
+  let flag = true;
+  const nowDate = new Date(
+    period.start.split('-')[2],
+    period.start.split('-')[1] - 1,
+    period.start.split('-')[0]
+  );
+  while (nowDate) {
+    if (flag === true) {
+      for (let i = 0; i < countWorkDays; i += 1) {
+        arr.push(getUserTime(nowDate));
+        nowDate.setDate(nowDate.getDate() + 1);
+        if (
+          nowDate.getTime() >
+          new Date(
+            period.end.split('-')[2],
+            period.end.split('-')[1] - 1,
+            period.end.split('-')[0]
+          ).getTime()
+        )
+          return arr;
+      }
+      flag = false;
+    }
+    if (flag === false) {
+      for (let i = 0; i < countOffDays; i += 1) {
+        nowDate.setDate(nowDate.getDate() + 1);
+        if (
+          nowDate.getTime() >
+          new Date(
+            period.end.split('-')[2],
+            period.end.split('-')[1] - 1,
+            period.end.split('-')[0]
+          ).getTime()
+        )
+          return arr;
+      }
+      flag = true;
+    }
+  }
+  return undefined;
 }
 
 /**
